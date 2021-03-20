@@ -10,6 +10,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController input = new TextEditingController();
+  bool isCameraPermissionEnable = false;
+
   void scan() async {
     String cameraScanResult = await scanner.scan();
     setState(() {
@@ -19,11 +21,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void copy() {}
   void share() {}
+
+  void checkPermission() async {
+    if (await Permission.camera.request().isGranted) {
+      setState(() {
+        isCameraPermissionEnable = true;
+      });
+    }
+    if (await Permission.camera.isPermanentlyDenied){
+
+      openAppSetting();
+    }
+  }
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text("QRCode Scanner")),
-        body: Container(
+        body: !isCamerraPermissionEnable ? Center() Container(
           child: Column(
             children: [
               Text("กดปุ่ม สแกน เพื่อนทำการสแกนส์"),
